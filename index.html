@@ -13,6 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mis Finanzas">
+<script>try{if(localStorage.getItem("mf-lock"))document.documentElement.classList.add("locked")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -160,6 +161,16 @@ code{font-size:12px;background:var(--bg);border:1px solid var(--line);border-rad
   .dash > .col{display:flex;flex-direction:column;gap:16px;min-width:0}
   .toast{bottom:28px}
 }
+/* Bloqueo */
+#lock{display:none}
+html.locked #app, html.locked nav.bottom, html.locked #modal{display:none!important}
+html.locked #lock{display:flex;min-height:100%;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 24px) 20px calc(env(safe-area-inset-bottom) + 24px)}
+.lockbox{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px;text-align:center;align-items:stretch}
+.lockbox .logo{width:72px;height:72px;border-radius:20px;margin:0 auto}
+.lockbox h2{font-size:22px}
+.bio{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--surface);cursor:pointer;color:var(--ink)}
+.bio svg{width:44px;height:44px;color:var(--accent)}
+.linkbtn{background:none;border:0;color:var(--accent);font-size:13px;cursor:pointer;padding:6px;text-decoration:underline}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -186,6 +197,7 @@ code{font-size:12px;background:var(--bg);border:1px solid var(--line);border-rad
   </div>
 </nav>
 <div id="modal"></div>
+<div id="lock" role="dialog" aria-label="App bloqueada"></div>
 <script type="module" src="app.js"></script>
 </body>
 </html>

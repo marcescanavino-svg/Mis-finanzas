@@ -1,10 +1,11 @@
 // Service worker de Mis Finanzas: guarda la app en el equipo para que abra sin internet.
 // Cambiá VERSION cada vez que publiques cambios para que los equipos se actualicen.
-const VERSION = "mf-v1.0.0";
+const VERSION = "mf-v1.1.0";
 const SHELL = [
   "./",
   "./index.html",
   "./app.js",
+  "./lock.js",
   "./firebase-config.js",
   "./manifest.webmanifest",
   "./icons/icon-192.png",

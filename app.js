@@ -1,9 +1,10 @@
 // Mis Finanzas — app instalable (PWA) con Firebase.
 // Los datos se guardan primero en el dispositivo y se sincronizan solos cuando hay internet.
 import { firebaseConfig } from "./firebase-config.js";
+import { initLock, lockSettingsHTML, bindLockSettings } from "./lock.js";
 
 const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.1.0";
 
 /* ============ Utilidades ============ */
 const $ = s => document.querySelector(s);
@@ -121,6 +122,7 @@ async function init(){
   $("#fab").addEventListener("click", () => openMov());
   document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#modal").innerHTML) closeSheet(); });
   registerSW();
+  initLock({onForgot: () => { if (fb) fb.auth.signOut(fb.au); }});
   if (!configured()){ updateSync(); $("#view").innerHTML = vSetup(); return; }
   try { fb = await loadFirebase(); }
   catch(e){ console.error(e); $("#view").innerHTML = `<div class="banner">No pude cargar la app. Si es la primera vez que la abrís, necesitás internet. Después funciona sin conexión.</div>`; return; }
@@ -517,6 +519,7 @@ function vAjustes(){
     <textarea class="in" id="imp-text" rows="4" placeholder='{"config":…,"movs":[…]}'></textarea>
     <div class="row"><label class="btn ghost" style="flex:1" for="imp-file">Elegir archivo</label><input type="file" id="imp-file" accept=".json,application/json" hidden><button class="btn" data-act="import" style="flex:1">Importar</button></div>
     <div id="imp-msg" class="small" role="status"></div></div>
+  <div class="card" id="lockCard"><h3>Bloqueo de la app</h3><div class="muted small">Cargando…</div></div>
   <div class="card"><h3>Cuenta</h3><div class="small">${esc(S.user.email || S.user.displayName || "")}</div><button class="btn ghost" data-act="logout">Cerrar sesión</button><div class="muted small">Versión ${APP_VERSION}</div></div>
   </div></div>`;
 }
@@ -532,7 +535,11 @@ function bindView(){
   const s = $("#search"); if (s) s.addEventListener("input", () => { movSearch = s.value; render(); });
   const cf = $("#cierreForm"); if (cf) cf.addEventListener("submit", saveCierre);
   const af = $("#ajForm"); if (af) af.addEventListener("submit", saveAjustes);
+  if ($("#lockCard")) fillLock();
   const fi = $("#imp-file"); if (fi) fi.addEventListener("change", async () => { const f = fi.files[0]; if (f) $("#imp-text").value = await f.text(); });
+}
+function fillLock(){
+  lockSettingsHTML().then(h => { const c = $("#lockCard"); if (!c) return; c.innerHTML = h; bindLockSettings(fillLock, S.user && S.user.email); });
 }
 function act(a, e){
   if (e) e.preventDefault();
